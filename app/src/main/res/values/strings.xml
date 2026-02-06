@@ -3,5 +3,9 @@
     <string name="no_internet">No internet - please connect</string>
     <string name="network_error">Network error</string>
     <string name="unknown_error">Unknown error</string>
+    <string name="users">Users</string>
+    <string name="no_users_loaded">No users loaded.</string>
+    <string name="refresh">Refresh</string>
+    <string name="reputation">Reputation</string>
 
 </resources>

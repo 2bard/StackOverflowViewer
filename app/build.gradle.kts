@@ -53,6 +53,7 @@ dependencies {
 
     //Navigation
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.material.icons.extended)
 
     //Retrofit
     implementation(libs.retrofit)
@@ -89,4 +90,5 @@ dependencies {
     //Image loading
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+
 }
