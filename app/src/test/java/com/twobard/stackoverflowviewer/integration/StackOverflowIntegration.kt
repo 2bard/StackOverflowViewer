@@ -1,9 +1,8 @@
-package com.twobard.stackoverflowviewer
+package com.twobard.stackoverflowviewer.integration
 
+import com.twobard.stackoverflowviewer.BuildConfig
 import com.twobard.stackoverflowviewer.data.api.StackOverflowApiImpl
 import kotlinx.coroutines.test.runTest
-
-
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
