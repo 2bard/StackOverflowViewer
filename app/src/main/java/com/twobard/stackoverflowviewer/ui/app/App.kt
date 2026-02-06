@@ -30,7 +30,7 @@ fun App() {
             val onClickFollow: (User) -> (Unit) = {
 
             }
-            UsersListScreen(snackbarHostState, usersItems, onRefresh, onClickFollow)
+            //UsersListScreen(snackbarHostState, usersItems, onRefresh, onClickFollow)
         }
     }
 }

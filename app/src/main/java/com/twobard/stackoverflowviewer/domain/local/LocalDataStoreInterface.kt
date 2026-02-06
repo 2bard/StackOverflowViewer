@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface LocalDataStoreInterface {
     fun followedUsers(): Flow<List<Int>>
-    suspend fun followUser(user: User)
+    suspend fun changeFollowStatus(user: User)
 }

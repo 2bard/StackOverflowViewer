@@ -2,12 +2,9 @@ package com.twobard.stackoverflowviewer.data.local
 
 import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.dataStoreFile
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
-import androidx.datastore.preferences.preferencesDataStoreFile
 
-import androidx.compose.runtime.getValue
 import com.twobard.stackoverflowviewer.domain.local.LocalDataStoreInterface
 import com.twobard.stackoverflowviewer.domain.user.User
 import kotlinx.coroutines.flow.Flow
@@ -28,10 +25,16 @@ class LocalDataStore(val context: Context) : LocalDataStoreInterface {
         preferences[USERS_KEY]?.mapNotNull { it.toIntOrNull() } ?: emptyList()
     }
 
-    override suspend fun followUser(user: User) {
+    override suspend fun changeFollowStatus(user: User) {
         dataStore.edit { preferences ->
             val current = preferences[USERS_KEY]?.toMutableSet() ?: mutableSetOf()
-            current.add(user.id.toString())
+
+            if(current.contains(user.id.toString())){
+                current.remove(user.id.toString())
+            } else {
+                current.add(user.id.toString())
+            }
+
             preferences[USERS_KEY] = current
         }
     }

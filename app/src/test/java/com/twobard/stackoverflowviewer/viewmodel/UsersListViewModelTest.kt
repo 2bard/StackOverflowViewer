@@ -41,7 +41,7 @@ class UsersListViewModelTest {
     @Test
     fun `given a UserListViewModel when getUsers then set State`() = runTest {
 
-        val users = listOf(User(1, "some_user"), User(2, "some_user_2"))
+        val users = listOf(User(1, "some_user", 213, "werw"), User(2, "some_user_2", 123, "sfsd"))
 
         coEvery { useCase.invoke() } returns Result.success(users)
 
