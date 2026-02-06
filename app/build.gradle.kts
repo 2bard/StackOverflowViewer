@@ -9,6 +9,10 @@ android {
     namespace = "com.twobard.stackoverflowviewer"
     compileSdk = 36
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.twobard.stackoverflowviewer"
         minSdk = 24
@@ -17,6 +21,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "API_VERSION", "\"2.2\"")
+        buildConfigField("String", "API_URL", "\"https://api.stackexchange.com/\"")
+
     }
 
     buildTypes {
@@ -47,6 +55,14 @@ dependencies {
     implementation(libs.converter.moshi)
     ksp(libs.moshi.kotlin.codegen)
 
+    //Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+
+    //Testing
+    testImplementation(libs.robolectric)
+    testImplementation(libs.kotlinx.coroutines.test)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -62,4 +78,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    testImplementation(kotlin("test"))
 }
