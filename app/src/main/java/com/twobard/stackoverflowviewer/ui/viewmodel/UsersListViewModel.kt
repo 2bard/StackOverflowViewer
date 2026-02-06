@@ -74,5 +74,5 @@ class UsersListViewModel @Inject constructor(val getUsersUseCase: GetUsersUseCas
     fun log(e: Throwable){
         //Log to firebase etc
     }
-    
+
 }

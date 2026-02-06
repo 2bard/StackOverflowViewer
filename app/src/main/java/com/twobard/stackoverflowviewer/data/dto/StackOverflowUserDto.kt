@@ -31,5 +31,7 @@ data class StackOverflowUserDto(
 
 fun StackOverflowUserDto.toUser() = User(
     id = this.user_id,
-    displayName = this.display_name
+    displayName = this.display_name,
+    reputation = this.reputation,
+    profileImage = this.profile_image
 )

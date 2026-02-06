@@ -2,8 +2,10 @@ package com.twobard.stackoverflowviewer
 
 import com.twobard.stackoverflowviewer.data.dto.BadgeCounts
 import com.twobard.stackoverflowviewer.data.dto.StackOverflowUserDto
+import kotlin.random.Random
 
 class Utils {
+
 }
 
 class StackOverflowUserDtoBuilder {
