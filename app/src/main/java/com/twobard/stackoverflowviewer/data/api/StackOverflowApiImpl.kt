@@ -11,9 +11,9 @@ interface StackOverflowApiImpl {
     suspend fun getUsers(
         @Query("page") page: Int = 1,
         @Query("pagesize") pageSize: Int = 20,
-        @Query("order") order: String = "desc",
-        @Query("sort") sort: String = "reputation",
-        @Query("site") site: String = "stackoverflow"
+        @Query("order") order: String = Order.DESC.value,
+        @Query("sort") sort: String = Sort.REPUTATION.value,
+        @Query("site") site: String = Site.STACK_OVERFLOW.value
     ): StackOverflowUsersResponse
 }
 

@@ -28,10 +28,7 @@ class StackOverflowIntegration {
     fun `given the StackOverflow api when getUsers called then 20 users returned`() = runTest {
         val result = api.getUsers(
             page = 1,
-            pageSize = 20,
-            order = "desc",
-            sort = "reputation",
-            site = "stackoverflow"
+            pageSize = 20
         )
         assertTrue(result.items.isNotEmpty())
         assertTrue(result.items.size == 20)

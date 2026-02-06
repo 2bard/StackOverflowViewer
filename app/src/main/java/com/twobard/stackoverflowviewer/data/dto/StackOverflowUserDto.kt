@@ -1,11 +1,12 @@
 package com.twobard.stackoverflowviewer.data.dto
 
 import com.squareup.moshi.JsonClass
+import com.twobard.stackoverflowviewer.domain.user.User
 import kotlinx.serialization.Serializable
 
 @Serializable
 @JsonClass(generateAdapter = true)
-data class StackOverflowUser(
+data class StackOverflowUserDto(
     val badge_counts: BadgeCounts,
     val account_id: Int,
     val is_employee: Boolean,
@@ -26,4 +27,9 @@ data class StackOverflowUser(
     val link: String,
     val profile_image: String,
     val display_name: String
+)
+
+fun StackOverflowUserDto.toUser() = User(
+    id = this.user_id,
+    displayName = this.display_name
 )

@@ -1,4 +1,4 @@
-package com.twobard.stackoverflowviewer.domain.network
+package com.twobard.stackoverflowviewer.di.network
 
 import com.squareup.moshi.Moshi
 import com.twobard.stackoverflowviewer.BuildConfig
