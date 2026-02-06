@@ -98,6 +98,21 @@ class UsersListViewModelTest {
         assertEquals(error, emittedError)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `given a UserListViewModel when getUsers returns generic Exception then emit Unknown error`() = runTest {
+
+        val error = Exception("whoops")
+        coEvery { useCase.invoke() } returns Result.failure(error)
+
+        viewModel.getUsers()
+        advanceUntilIdle()
+
+        val emittedError = viewModel.errors.first()
+
+        assert(emittedError is UserRepositoryImpl.NetworkError.UnknownError)
+    }
+
 
 
 }

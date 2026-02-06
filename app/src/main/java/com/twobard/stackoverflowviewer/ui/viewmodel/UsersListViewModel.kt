@@ -34,7 +34,7 @@ class UsersListViewModel @Inject constructor(val getUsersUseCase: GetUsersUseCas
             if (result.isSuccess) {
                 _users.value = result.getOrNull() ?: emptyList()
             } else if (result.isFailure) {
-                handleError(result.exceptionOrNull() as UserRepositoryImpl.NetworkError)
+                handleError(result.exceptionOrNull())
             }
 
             doneLoading()
@@ -49,10 +49,17 @@ class UsersListViewModel @Inject constructor(val getUsersUseCase: GetUsersUseCas
 
     }
 
-    suspend fun handleError(e: UserRepositoryImpl.NetworkError?) {
+    suspend fun handleError(e: Throwable?) {
         e?.let {
             log(e)
-            _errors.emit(e)
+            //probs should be when() for type checking
+            if(e is UserRepositoryImpl.NetworkError){
+                _errors.emit(e)
+            } else {
+                //We don't know about this exception type, treat it as unknown
+                _errors.emit(UserRepositoryImpl.NetworkError.UnknownError())
+            }
+
         } ?: run {
             //Something went very wrong
             log("Illegal state")
@@ -64,12 +71,8 @@ class UsersListViewModel @Inject constructor(val getUsersUseCase: GetUsersUseCas
         //Log to firebase etc
     }
 
-    fun log(e: UserRepositoryImpl.NetworkError){
+    fun log(e: Throwable){
         //Log to firebase etc
     }
-
-    init {
-
-
-    }
+    
 }
