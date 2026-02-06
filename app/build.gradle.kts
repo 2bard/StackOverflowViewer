@@ -51,6 +51,11 @@ android {
 
 dependencies {
 
+    //Datastore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+
+
     //Navigation
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.material.icons.extended)
@@ -58,6 +63,7 @@ dependencies {
     //Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.moshi)
+    implementation(libs.androidx.datastore.core.android)
     ksp(libs.moshi.kotlin.codegen)
 
     //Hilt
