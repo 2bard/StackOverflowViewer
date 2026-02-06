@@ -50,6 +50,9 @@ android {
 
 dependencies {
 
+    //Navigation
+    implementation(libs.androidx.hilt.navigation.compose)
+
     //Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.moshi)
