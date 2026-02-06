@@ -1,6 +1,6 @@
 package com.twobard.stackoverflowviewer.viewmodel
 
-import androidx.lifecycle.SavedStateHandle
+import com.twobard.stackoverflowviewer.data.repository.UserRepositoryImpl
 import com.twobard.stackoverflowviewer.domain.network.GetUsersUseCase
 import com.twobard.stackoverflowviewer.domain.user.User
 import com.twobard.stackoverflowviewer.ui.viewmodel.UsersListViewModel
@@ -18,8 +18,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import kotlin.intArrayOf
-import kotlin.invoke
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
@@ -29,19 +27,19 @@ import kotlin.test.assertNotNull
 class UsersListViewModelTest {
 
     private lateinit var useCase: GetUsersUseCase
+    private lateinit var viewModel: UsersListViewModel
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setup() {
         Dispatchers.setMain(StandardTestDispatcher())
         useCase = mockk<GetUsersUseCase>()
+        viewModel = UsersListViewModel(useCase)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `given a UserListViewModel when getUsers then set State`() = runTest {
-
-        var viewModel = UsersListViewModel(useCase)
 
         val users = listOf(User(1, "some_user"), User(2, "some_user_2"))
 
@@ -54,5 +52,22 @@ class UsersListViewModelTest {
 
         assertNotNull(emitted)
     }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `given a UserListViewModel when getUsers returns NetworkFailure then emit error`() = runTest {
+
+        val error = UserRepositoryImpl.NetworkError.NetworkFailure()
+        coEvery { useCase.invoke() } returns Result.failure(error)
+
+        viewModel.getUsers()
+        advanceUntilIdle()
+
+        val emittedError = viewModel.errors.first()
+
+        assertEquals(error, emittedError)
+    }
+
+    
 
 }

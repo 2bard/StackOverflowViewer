@@ -2,11 +2,14 @@ package com.twobard.stackoverflowviewer.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.twobard.stackoverflowviewer.data.repository.UserRepositoryImpl
 import com.twobard.stackoverflowviewer.domain.network.GetUsersUseCase
 import com.twobard.stackoverflowviewer.domain.user.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -18,6 +21,9 @@ class UsersListViewModel @Inject constructor(val getUsersUseCase: GetUsersUseCas
     private val _users = MutableStateFlow<List<User>>(emptyList())
     val users: StateFlow<List<User>> = _users
 
+    private val _errors = MutableSharedFlow<UserRepositoryImpl.NetworkError?>()
+    val errors: SharedFlow<UserRepositoryImpl.NetworkError?> = _errors
+
     fun getUsers() {
         viewModelScope.launch {
             isLoading()
@@ -28,7 +34,7 @@ class UsersListViewModel @Inject constructor(val getUsersUseCase: GetUsersUseCas
             if (result.isSuccess) {
                 _users.value = result.getOrNull() ?: emptyList()
             } else if (result.isFailure) {
-                handleError(result.exceptionOrNull())
+                handleError(result.exceptionOrNull() as UserRepositoryImpl.NetworkError)
             }
 
             doneLoading()
@@ -43,8 +49,23 @@ class UsersListViewModel @Inject constructor(val getUsersUseCase: GetUsersUseCas
 
     }
 
-    fun handleError(e: Throwable?) {
-        //TODO:
+    suspend fun handleError(e: UserRepositoryImpl.NetworkError?) {
+        e?.let {
+            log(e)
+            _errors.emit(e)
+        } ?: run {
+            //Something went very wrong
+            log("Illegal state")
+            _errors.emit(UserRepositoryImpl.NetworkError.UnknownError())
+        }
+    }
+
+    fun log(str: String){
+        //Log to firebase etc
+    }
+
+    fun log(e: UserRepositoryImpl.NetworkError){
+        //Log to firebase etc
     }
 
     init {

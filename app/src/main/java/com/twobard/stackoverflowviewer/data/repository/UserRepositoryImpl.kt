@@ -42,14 +42,14 @@ class UserRepositoryImpl @Inject constructor(val stackOverflowApiImpl: StackOver
         } catch (e: IOException) {
             Result.failure(NetworkError.NetworkFailure(e))
         } catch (e: Exception) {
-            Result.failure(e)
+            Result.failure(NetworkError.UnknownError(e))
         }
     }
 
 
-    sealed class NetworkError(@StringRes val messageRes: Int, cause: Throwable? = null) :
-        Throwable(null, cause) {
+    sealed class NetworkError(@StringRes val messageRes: Int, cause: Throwable? = null) : Throwable(null, cause) {
         class NoInternet(cause: Throwable? = null) : NetworkError(R.string.no_internet, cause)
         class NetworkFailure(cause: Throwable? = null) : NetworkError(R.string.network_error, cause)
+        class UnknownError(cause: Throwable? = null) : NetworkError(R.string.unknown_error, cause)
     }
 }
