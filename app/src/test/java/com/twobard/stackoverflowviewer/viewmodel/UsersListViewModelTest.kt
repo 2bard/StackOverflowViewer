@@ -68,6 +68,36 @@ class UsersListViewModelTest {
         assertEquals(error, emittedError)
     }
 
-    
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `given a UserListViewModel when getUsers returns NoInternet then emit error`() = runTest {
+
+        val error = UserRepositoryImpl.NetworkError.NoInternet()
+        coEvery { useCase.invoke() } returns Result.failure(error)
+
+        viewModel.getUsers()
+        advanceUntilIdle()
+
+        val emittedError = viewModel.errors.first()
+
+        assertEquals(error, emittedError)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `given a UserListViewModel when getUsers returns UnknownError then emit error`() = runTest {
+
+        val error = UserRepositoryImpl.NetworkError.UnknownError()
+        coEvery { useCase.invoke() } returns Result.failure(error)
+
+        viewModel.getUsers()
+        advanceUntilIdle()
+
+        val emittedError = viewModel.errors.first()
+
+        assertEquals(error, emittedError)
+    }
+
+
 
 }
