@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import com.twobard.stackoverflowviewer.domain.user.User
 import com.twobard.stackoverflowviewer.ui.list.UsersListScreen
 import com.twobard.stackoverflowviewer.ui.viewmodel.UsersListViewModel
+import androidx.compose.runtime.getValue
 
 @Composable
 fun App() {
@@ -22,15 +23,16 @@ fun App() {
 
             val snackbarHostState = remember { SnackbarHostState() }
             val viewModel = hiltViewModel<UsersListViewModel>()
-            val usersItems = viewModel.users.collectAsState().value
+            val usersItems by viewModel.usersWithFollowStatus.collectAsState()
+            val isLoading by viewModel.loading.collectAsState()
             val onRefresh = {
 
             }
 
             val onClickFollow: (User) -> (Unit) = {
-
+                viewModel.changeFollowStatus(it)
             }
-            //UsersListScreen(snackbarHostState, usersItems, onRefresh, onClickFollow)
+            UsersListScreen(snackbarHostState, isLoading, usersItems, onRefresh, onClickFollow)
         }
     }
 }

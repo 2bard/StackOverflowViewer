@@ -7,6 +7,7 @@ import com.twobard.stackoverflowviewer.domain.local.LocalDataStoreInterface
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -16,7 +17,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideDataStore(context: Context) : LocalDataStoreInterface {
+    fun provideDataStore(@ApplicationContext context: Context) : LocalDataStoreInterface {
         return LocalDataStore(context)
     }
 }

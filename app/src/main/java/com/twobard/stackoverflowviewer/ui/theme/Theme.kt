@@ -58,6 +58,8 @@ fun StackOverflowViewerTheme(
     )
 }
 
+val displayPictureSize = 48.dp
+
 val paddingSmall = 12.dp
 val paddingMedium = 16.dp
 val paddingLarge = 20.dp
