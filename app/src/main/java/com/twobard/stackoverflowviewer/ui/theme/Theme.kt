@@ -59,6 +59,8 @@ fun StackOverflowViewerTheme(
 }
 
 val displayPictureSize = 48.dp
+val listElevation = 8.dp
+val profilePicElevation = 8.dp
 
 val paddingSmall = 12.dp
 val paddingMedium = 16.dp

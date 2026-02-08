@@ -1,4 +1,4 @@
-package com.twobard.stackoverflowviewer.local
+package com.twobard.stackoverflowviewer.data.local
 
 import android.content.Context
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory

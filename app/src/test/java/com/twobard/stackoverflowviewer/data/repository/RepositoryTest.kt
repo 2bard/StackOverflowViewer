@@ -1,4 +1,4 @@
-package com.twobard.stackoverflowviewer.repository
+package com.twobard.stackoverflowviewer.data.repository
 
 import com.twobard.stackoverflowviewer.StackOverflowUserDtoBuilder
 import com.twobard.stackoverflowviewer.data.api.StackOverflowApiImpl
@@ -11,6 +11,11 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+import java.io.IOException
+import kotlin.intArrayOf
 import kotlin.test.assertEquals
 
 class RepositoryTest {
@@ -25,8 +30,8 @@ class RepositoryTest {
     }
 
     @Test
-    fun `given UserRepo when getUsers then correct Users returned`() = runTest {
-
+    fun `given api returns users when getUsers then correct Users returned`() = runTest {
+        //the name of this test is horrible
 
         val mockResult = StackOverflowUsersResponse(items = listOf(
             StackOverflowUserDtoBuilder().apply {
@@ -54,4 +59,18 @@ class RepositoryTest {
             assertEquals("somename-${index + 1}", item.displayName)
         }
     }
+
+    @Test
+    fun `given api throws IOException when getUsers then Result is failure`() = runTest {
+        val exception = IOException("network failed")
+        coEvery { api.getUsers(any(), any(), any(), any(), any()) } throws exception
+
+        val result = repository.getUsers(1, 2)
+
+        assert(result.isFailure)
+        assert(result.exceptionOrNull() is UserRepositoryImpl.NetworkError.NetworkFailure)
+    }
+
+    //Extra test ideas:
+    //Exhaustive test for all exception types
 }

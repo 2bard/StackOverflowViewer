@@ -1,4 +1,4 @@
-package com.twobard.stackoverflowviewer.viewmodel
+package com.twobard.stackoverflowviewer.ui.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import com.twobard.stackoverflowviewer.data.repository.UserRepositoryImpl

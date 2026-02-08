@@ -20,6 +20,8 @@ class UserRepositoryImpl @Inject constructor(
     UserRepository {
 
 
+    //Currently this just gets users from the network
+    //This could be extended to get users from local storage
     override suspend fun getUsers(
         page: Int,
         pageSize: Int,
@@ -49,7 +51,8 @@ class UserRepositoryImpl @Inject constructor(
     }
 
 
-    sealed class NetworkError(@StringRes val messageRes: Int, cause: Throwable? = null) : Throwable(null, cause) {
+    sealed class NetworkError(@StringRes val messageRes: Int, cause: Throwable? = null) :
+        Throwable(null, cause) {
         class NoInternet(cause: Throwable? = null) : NetworkError(R.string.no_internet, cause)
         class NetworkFailure(cause: Throwable? = null) : NetworkError(R.string.network_error, cause)
         class UnknownError(cause: Throwable? = null) : NetworkError(R.string.unknown_error, cause)
