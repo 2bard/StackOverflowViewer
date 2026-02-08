@@ -49,8 +49,8 @@ class UsersListViewModel @Inject constructor(
     )
     val loading: StateFlow<Boolean> = _isLoading
 
-    //List error flow
-    private val _errors = MutableSharedFlow<UserRepositoryImpl.NetworkError?>()
+    //List error state
+    private val _errors = MutableSharedFlow<UserRepositoryImpl.NetworkError?>(replay = 1) //replay needed for testing - collect is called after first emission
     val errors: SharedFlow<UserRepositoryImpl.NetworkError?> = _errors
 
     //Followed event
