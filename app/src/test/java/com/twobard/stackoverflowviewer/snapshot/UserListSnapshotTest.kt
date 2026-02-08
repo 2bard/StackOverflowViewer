@@ -11,7 +11,7 @@ import org.junit.Test
 class UserListSnapshotTest {
 
     @get:Rule
-    val largeTextPaparazzi = Paparazzi(
+    val paparazzi = Paparazzi(
         deviceConfig = DeviceConfig.PIXEL_6_PRO
     )
 
@@ -19,10 +19,19 @@ class UserListSnapshotTest {
     fun userListLargeTextScreenPreview() {
         val provider = UserListPreviewProvider()
         provider.values.forEach {
-            largeTextPaparazzi.snapshot (name = "UsersList_{${it.hashCode()}") {
+            paparazzi.snapshot (name = "UsersList_{${it.hashCode()}") {
                 StackOverflowViewerTheme {
                     UsersListScreen(isLoading = false, users = it, )
                 }
+            }
+        }
+    }
+
+    @Test
+    fun userListLargeTextLoadingScreenPreview() {
+        paparazzi.snapshot (name = "UsersList_IsLoading") {
+            StackOverflowViewerTheme {
+                UsersListScreen(isLoading = true, users = listOf(), )
             }
         }
     }

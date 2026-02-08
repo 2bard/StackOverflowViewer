@@ -21,8 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.twobard.stackoverflowviewer.R
 import com.twobard.stackoverflowviewer.domain.user.User
-import com.twobard.stackoverflowviewer.ui.list.FollowButton
-import com.twobard.stackoverflowviewer.ui.list.ProfilePicture
 import com.twobard.stackoverflowviewer.ui.list.UserPreviewProvider
 import com.twobard.stackoverflowviewer.ui.theme.displayPictureSize
 import com.twobard.stackoverflowviewer.ui.theme.listElevation

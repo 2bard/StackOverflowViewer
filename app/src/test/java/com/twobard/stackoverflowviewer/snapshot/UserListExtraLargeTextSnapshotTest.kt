@@ -16,18 +16,26 @@ class UserListExtraLargeTextSnapshotTest {
     )
 
     @Test
-    fun userListScreenPreview() {
+    fun userListExtraLargeTextScreenPreview() {
         val provider = UserListPreviewProvider()
         provider.values.forEach {
             paparazzi.snapshot(name = "UsersList_ExtraLargeText_{${it.hashCode()}") {
                 StackOverflowViewerTheme {
-                    UsersListScreen(isLoading = false, users = it, )
+                    UsersListScreen(isLoading = false, users = it)
                 }
             }
         }
     }
 
+    @Test
+    fun userListExtraLargeTextLoadingScreenPreview() {
+        paparazzi.snapshot(name = "UsersList_ExtraLargeText_IsLoading") {
+            StackOverflowViewerTheme {
+                UsersListScreen(isLoading = true, users = listOf())
+            }
+        }
 
+    }
 
 
 }
