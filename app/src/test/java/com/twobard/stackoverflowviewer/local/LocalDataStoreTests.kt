@@ -47,6 +47,7 @@ class LocalDataStoreTests {
         dataStoreFile.delete()
     }
 
+    //These should be two separate tests
     @Test
     fun testFollowAndRetrieveUsers() = runBlocking {
         val user = User(123, "Test User", 123, "")

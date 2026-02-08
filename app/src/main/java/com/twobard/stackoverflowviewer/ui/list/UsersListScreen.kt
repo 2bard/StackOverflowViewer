@@ -40,6 +40,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -47,6 +48,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.twobard.stackoverflowviewer.R
@@ -54,8 +56,10 @@ import com.twobard.stackoverflowviewer.data.dto.toUser
 import com.twobard.stackoverflowviewer.domain.user.User
 import com.twobard.stackoverflowviewer.ui.components.LoadingState
 import com.twobard.stackoverflowviewer.ui.theme.displayPictureSize
+import com.twobard.stackoverflowviewer.ui.theme.listElevation
 import com.twobard.stackoverflowviewer.ui.theme.paddingMedium
 import com.twobard.stackoverflowviewer.ui.theme.paddingSmall
+import com.twobard.stackoverflowviewer.ui.theme.profilePicElevation
 import com.twobard.stackoverflowviewer.ui.utils.Utils.Companion.randomUser
 
 
@@ -100,7 +104,6 @@ fun UsersListScreen(
             contentAlignment = Alignment.Center
         ) {
 
-
             UsersList(
                 isLoading = isLoading,
                 users = users,
@@ -125,7 +128,7 @@ fun UsersList(@PreviewParameter(UserListPreviewProvider::class) users: List<Pair
               onClickFollow: (User) -> Unit = {}) {
 
 
-    Box(contentAlignment = Alignment.Center) {
+    Box(modifier = Modifier.padding(paddingMedium), contentAlignment = Alignment.Center) {
 
         if(isLoading) {
             LoadingState()
@@ -184,19 +187,14 @@ fun UserCard(@PreviewParameter(UserPreviewProvider::class) user: Pair<User, Bool
     val userObject = user.first
     val isFollowed = user.second
 
-    Card(elevation = CardDefaults.cardElevation()) {
+    Card(elevation = CardDefaults.cardElevation(listElevation)) {
         Row(modifier = Modifier.padding(paddingMedium)) {
 
-            AsyncImage(
-                modifier = Modifier.size(displayPictureSize),
-                model = userObject.profileImage,
-                contentDescription = null,
-            )
+            ProfilePicture(userObject, displayPictureSize)
 
             Spacer(modifier = Modifier.width(paddingSmall))
 
             Column(modifier = Modifier.weight(1f)) {
-
 
                 Row {
                     Text(
@@ -212,9 +210,7 @@ fun UserCard(@PreviewParameter(UserPreviewProvider::class) user: Pair<User, Bool
                         imageVector = Icons.Default.Star,
                         tint = MaterialTheme.colorScheme.onPrimary
                     )
-                    Text(text = stringResource(R.string.reputation), style = MaterialTheme.typography.titleSmall)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(userObject.reputation.toString(), style = MaterialTheme.typography.bodySmall)
+                   Text(userObject.reputation.toString(), style = MaterialTheme.typography.bodySmall)
                 }
 
             }
@@ -225,6 +221,17 @@ fun UserCard(@PreviewParameter(UserPreviewProvider::class) user: Pair<User, Bool
                 isFollowed = isFollowed
             )
         }
+    }
+}
+
+@Composable
+fun ProfilePicture(user: User, size: Dp){
+    Card(elevation = CardDefaults.cardElevation(profilePicElevation)) {
+        AsyncImage(
+            modifier = Modifier.size(size).clip(RoundedCornerShape(12.dp)),
+            model = user.profileImage,
+            contentDescription = null,
+        )
     }
 }
 

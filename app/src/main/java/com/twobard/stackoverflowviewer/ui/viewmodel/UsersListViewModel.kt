@@ -1,15 +1,11 @@
 package com.twobard.stackoverflowviewer.ui.viewmodel
 
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.Saver
+import android.os.Parcelable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.SavedStateHandleSaveableApi
-import androidx.lifecycle.viewmodel.compose.saveable
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
 import com.twobard.stackoverflowviewer.data.repository.UserRepositoryImpl
+import com.twobard.stackoverflowviewer.domain.events.FollowedEvent
 import com.twobard.stackoverflowviewer.domain.network.GetFollowsUseCase
 import com.twobard.stackoverflowviewer.domain.network.GetUsersUseCase
 import com.twobard.stackoverflowviewer.domain.state.UsersListSerializer
@@ -25,10 +21,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.parcelize.Parcelize
 import javax.inject.Inject
-import kotlin.invoke
-import kotlin.text.get
-import kotlin.text.set
 
 
 @HiltViewModel
@@ -43,18 +37,25 @@ class UsersListViewModel @Inject constructor(
     companion object {
         private const val USERS_KEY = "users"
         private val FOLLOWS_KEY = "follows"
+        private val LOADING_KEY = "is_loading"
     }
 
 
     //UI State
 
     //List loading state
-    private val _isLoading = MutableStateFlow<Boolean>(false)
+    private val _isLoading = MutableStateFlow<Boolean>(
+        savedStateHandle.get<Boolean>(LOADING_KEY) ?: false
+    )
     val loading: StateFlow<Boolean> = _isLoading
 
-    //List error state
+    //List error flow
     private val _errors = MutableSharedFlow<UserRepositoryImpl.NetworkError?>()
     val errors: SharedFlow<UserRepositoryImpl.NetworkError?> = _errors
+
+    //Followed event
+    private val _followedEvent = MutableSharedFlow<FollowedEvent>()
+    val followedEvent: SharedFlow<FollowedEvent> = _followedEvent
 
     //SavedState-backed list of users
     private val _users = MutableStateFlow<List<User>>(
@@ -98,18 +99,21 @@ class UsersListViewModel @Inject constructor(
 
     fun getUsers() {
         viewModelScope.launch {
-            isLoading()
-            val result = withContext(Dispatchers.IO) {
-                getUsersUseCase.invoke()
-            }
+            try {
+                isLoading()
+                val result = withContext(Dispatchers.IO) {
+                    getUsersUseCase.invoke()
+                }
 
-            if (result.isSuccess) {
-                setUsers(result.getOrNull() ?: emptyList())
-            } else if (result.isFailure) {
-                handleError(result.exceptionOrNull())
+                if (result.isSuccess) {
+                    setUsers(result.getOrNull() ?: emptyList())
+                } else if (result.isFailure) {
+                    handleError(result.exceptionOrNull())
+                }
+            } finally {
+                //In case the coroutine get cancelled
+                doneLoading()
             }
-
-            doneLoading()
         }
     }
 
@@ -123,10 +127,12 @@ class UsersListViewModel @Inject constructor(
 
     fun isLoading() {
         _isLoading.value = true
+        savedStateHandle[LOADING_KEY] = true
     }
 
     fun doneLoading() {
         _isLoading.value = false
+        savedStateHandle[LOADING_KEY] = false
     }
 
     suspend fun handleError(e: Throwable?) {
@@ -157,8 +163,16 @@ class UsersListViewModel @Inject constructor(
 
     fun changeFollowStatus(user: User) {
         viewModelScope.launch {
-            getFollowsUseCase.changeFollow(user)
+            val followedEvent = getFollowsUseCase.changeFollow(user)
+            followedEvent?.let {
+                _followedEvent.emit(it)
+            }
         }
+    }
+
+    fun refresh() {
+        getUsers()
+        getFollows()
     }
 
     // StateFlow of List<Pair<User, Boolean>>: each user paired with whether their id exists in the follows repository

@@ -1,9 +1,9 @@
 package com.twobard.stackoverflowviewer.domain.network
 
-import com.twobard.stackoverflowviewer.data.local.LocalDataStore
+import com.twobard.stackoverflowviewer.domain.events.FollowedEvent
 import com.twobard.stackoverflowviewer.domain.repository.FollowRepository
-import com.twobard.stackoverflowviewer.domain.repository.UserRepository
 import com.twobard.stackoverflowviewer.domain.user.User
+import com.twobard.stackoverflowviewer.ui.viewmodel.UsersListViewModel
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -15,7 +15,7 @@ class GetFollowsUseCase @Inject constructor(
         return repository.followedUsers()
     }
 
-    suspend fun changeFollow(user: User) {
-        repository.followUser(user)
+    suspend fun changeFollow(user: User) : FollowedEvent? {
+        return repository.changeFollowState(user)
     }
 }

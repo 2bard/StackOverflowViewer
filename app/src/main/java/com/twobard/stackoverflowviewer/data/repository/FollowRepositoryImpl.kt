@@ -8,5 +8,5 @@ import javax.inject.Inject
 
 class FollowRepositoryImpl @Inject constructor(private val localDataStore: LocalDataStoreInterface) : FollowRepository {
     override fun followedUsers(): Flow<List<Int>> = localDataStore.followedUsers()
-    override suspend fun followUser(user: User) = localDataStore.changeFollowStatus(user)
+    override suspend fun changeFollowState(user: User) = localDataStore.changeFollowStatus(user)
 }
