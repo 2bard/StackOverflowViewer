@@ -1,10 +1,18 @@
 package com.twobard.stackoverflowviewer.ui.viewmodel
 
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.Saver
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.SavedStateHandleSaveableApi
+import androidx.lifecycle.viewmodel.compose.saveable
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import com.twobard.stackoverflowviewer.data.repository.UserRepositoryImpl
 import com.twobard.stackoverflowviewer.domain.network.GetFollowsUseCase
 import com.twobard.stackoverflowviewer.domain.network.GetUsersUseCase
+import com.twobard.stackoverflowviewer.domain.state.UsersListSerializer
 import com.twobard.stackoverflowviewer.domain.user.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -18,34 +26,73 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.invoke
+import kotlin.text.get
+import kotlin.text.set
+
 
 @HiltViewModel
 class UsersListViewModel @Inject constructor(
+    val savedStateHandle: SavedStateHandle,
+    val usersListSerializer: UsersListSerializer,
     val getUsersUseCase: GetUsersUseCase,
-    val getFollowsUseCase: GetFollowsUseCase) : ViewModel() {
+    val getFollowsUseCase: GetFollowsUseCase
+) : ViewModel() {
 
+    //SavedState keys
+    companion object {
+        private const val USERS_KEY = "users"
+        private val FOLLOWS_KEY = "follows"
+    }
+
+
+    //UI State
+
+    //List loading state
     private val _isLoading = MutableStateFlow<Boolean>(false)
     val loading: StateFlow<Boolean> = _isLoading
 
-    private val _users = MutableStateFlow<List<User>>(emptyList())
-    val users: StateFlow<List<User>> = _users
-
+    //List error state
     private val _errors = MutableSharedFlow<UserRepositoryImpl.NetworkError?>()
     val errors: SharedFlow<UserRepositoryImpl.NetworkError?> = _errors
 
-    private val _follows = MutableStateFlow<List<Int>>(emptyList())
+    //SavedState-backed list of users
+    private val _users = MutableStateFlow<List<User>>(
+        savedStateHandle.get<String>(USERS_KEY)
+            ?.let {
+                usersListSerializer.deserialize(it)
+            }
+            ?: emptyList<User>()
+    )
+    val users: StateFlow<List<User>> = _users
+
+    //SavedState-backed list of follows
+    private val _follows = MutableStateFlow<List<Int>>(
+        savedStateHandle.get<String>(FOLLOWS_KEY)
+            ?.let { usersListSerializer.deserializeFollows(it) }
+            ?: emptyList()
+    )
     val follows: StateFlow<List<Int>> = _follows
 
-    init {
-        getUsers()
-        getFollows()
+
+    fun setFollows(follows: List<Int>) {
+        _follows.value = follows
+        //add them to saved state so they survive process death
+        savedStateHandle[FOLLOWS_KEY] = usersListSerializer.serializeFollows(follows)
     }
 
-    fun getFollows() {
-        viewModelScope.launch {
-            getFollowsUseCase.invoke().collect { result ->
-                _follows.value = result
-            }
+    fun setUsers(users: List<User>) {
+        _users.value = users
+        //add them to saved state so they survive process death
+        savedStateHandle[USERS_KEY] = usersListSerializer.serialize(users)
+    }
+
+    init {
+        if (_users.value.isEmpty()) {
+            getUsers()
+        }
+        if (_follows.value.isEmpty()) {
+            getFollows()
         }
     }
 
@@ -57,12 +104,20 @@ class UsersListViewModel @Inject constructor(
             }
 
             if (result.isSuccess) {
-                _users.value = result.getOrNull() ?: emptyList()
+                setUsers(result.getOrNull() ?: emptyList())
             } else if (result.isFailure) {
                 handleError(result.exceptionOrNull())
             }
 
             doneLoading()
+        }
+    }
+
+    fun getFollows() {
+        viewModelScope.launch {
+            getFollowsUseCase.invoke().collect { result ->
+                setFollows(result)
+            }
         }
     }
 
@@ -78,7 +133,7 @@ class UsersListViewModel @Inject constructor(
         e?.let {
             log(e)
             //probs should be when() for type checking
-            if(e is UserRepositoryImpl.NetworkError){
+            if (e is UserRepositoryImpl.NetworkError) {
                 _errors.emit(e)
             } else {
                 //We don't know about this exception type, treat it as unknown
@@ -92,11 +147,11 @@ class UsersListViewModel @Inject constructor(
         }
     }
 
-    fun log(str: String){
+    fun log(str: String) {
         //Log to firebase etc
     }
 
-    fun log(e: Throwable){
+    fun log(e: Throwable) {
         //Log to firebase etc
     }
 
