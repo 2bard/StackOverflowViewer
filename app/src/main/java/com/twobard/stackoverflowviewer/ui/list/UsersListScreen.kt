@@ -81,11 +81,11 @@ class UserPreviewProvider : PreviewParameterProvider<Pair<User, Boolean>> {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UsersListScreen(
-    snackbarHostState: SnackbarHostState,
+    snackbarHostState: SnackbarHostState = SnackbarHostState(),
     isLoading: Boolean,
-    users: List<Pair<User, Boolean>>,
-    onRefresh: () -> Unit,
-    onClickFollow : (User) -> Unit
+    @PreviewParameter(UserListPreviewProvider::class) users: List<Pair<User, Boolean>>,
+    onRefresh: () -> Unit = {},
+    onClickFollow : (User) -> Unit = {}
 ) {
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
@@ -188,7 +188,7 @@ fun UserCard(@PreviewParameter(UserPreviewProvider::class) user: Pair<User, Bool
     val isFollowed = user.second
 
     Card(elevation = CardDefaults.cardElevation(listElevation)) {
-        Row(modifier = Modifier.padding(paddingMedium)) {
+        Row(modifier = Modifier.padding(paddingMedium), verticalAlignment = Alignment.CenterVertically) {
 
             ProfilePicture(userObject, displayPictureSize)
 
