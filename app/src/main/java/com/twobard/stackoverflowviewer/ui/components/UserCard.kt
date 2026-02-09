@@ -1,11 +1,14 @@
 package com.twobard.stackoverflowviewer.ui.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -41,7 +44,7 @@ fun UserCard(@PreviewParameter(UserPreviewProvider::class) user: Pair<User, Bool
 
             Spacer(modifier = Modifier.width(paddingSmall))
 
-            Column(modifier = Modifier.weight(1f)) {
+            Column(modifier = Modifier.weight(1f).height(displayPictureSize), verticalArrangement = Arrangement.Top) {
 
                 Row {
                     Text(
@@ -57,7 +60,24 @@ fun UserCard(@PreviewParameter(UserPreviewProvider::class) user: Pair<User, Bool
                         imageVector = Icons.Default.Star,
                         tint = MaterialTheme.colorScheme.onPrimary
                     )
-                    Text(userObject.reputation.toString(), style = MaterialTheme.typography.bodySmall)
+                    Text(
+                        userObject.reputation.toString(),
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+
+                if (isFollowed) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            contentDescription = stringResource(R.string.following),
+                            imageVector = Icons.Default.Check,
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
+                        Text(
+                            text = stringResource(R.string.following),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
                 }
 
             }

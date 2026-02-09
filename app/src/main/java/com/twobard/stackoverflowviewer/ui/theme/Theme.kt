@@ -59,7 +59,7 @@ fun StackOverflowViewerTheme(
 }
 
 val loadingSpinnerSize= 64.dp
-val displayPictureSize = 48.dp
+val displayPictureSize = 72.dp
 val listElevation = 8.dp
 val profilePicElevation = 8.dp
 

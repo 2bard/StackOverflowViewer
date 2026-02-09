@@ -46,15 +46,15 @@
 
 ## User list - Normal text
 
-![User list - Normal text](app/build/reports/paparazzi/debug/images/d5887f1962cff0bedb1ae67dbc94ff3797ef951b.png)
+![User list - Normal text](app/build/reports/paparazzi/debug/images/0010acf838a60e9c8c6e388ee8084225f0b4fd3e.png)
 
 ## User list - Large text
 
-![User list - Large text](app/build/reports/paparazzi/debug/images/e2ac3e3d1ae154eb17ae4c136c5509710027fa61.png)
+![User list - Large text](app/build/reports/paparazzi/debug/images/551b37bbef4213b6aea0c1f2515d84cf44196c4c.png)
 
 ## User list - Extra Large text
 
-![User list - Extra Large text](app/build/reports/paparazzi/debug/images/c5ee84b780d3af5ec44abaa0c7124bf04f09ce95.png)
+![User list - Extra Large text](app/build/reports/paparazzi/debug/images/d1797b7ef34b28f825fd20a675e145dd3ceabab2.png)
 
 ## User list - Loading - Normal text
 
